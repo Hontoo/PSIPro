@@ -302,8 +302,8 @@ unsigned long commandTiming = 0;
 int level[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 //Serial Stuff
-int lastPSIeventCode  = defaultPattern;
-bool firstTimeCode    = true;
+int lastPSIeventCode = defaultPattern;
+bool firstTimeCode   = true;
 
 // handle to the Serial object
 Stream* serialPort;
