@@ -11,14 +11,14 @@
  *    
  *  BEFORE BUILDING OR UPLOADING THIS SKETCH, be sure that the config.h and matrices.h files are in the skectch folder. 
  *
- *  Version 1.1.01
+ *  Version 1.2
  *
  *  Version History :
  *  
- *  Version 1.1.01 16th April 2020
+ *  Version 1.2 16th April 2020
  *  
  *    Correct comment typos
- *    Always on was actually only on for 17 min. Changed to +4 hrs.
+ *    Always on was actually only on for 17 min. Changed to +18 hrs.
  *    Change Star Wars Intro
  *  
  *  Version 1.1 - 13th April 2020
