@@ -1936,7 +1936,7 @@ void StarWarsIntro(unsigned long time_delay, uint8_t loops, CRGB color, unsigned
     globalPatternLoops = loops;
     if ((runtime != 0) && (!timingReceived)) set_global_timeout(runtime);
     if (timingReceived) set_global_timeout(commandTiming);
-    ledPatternState = 0;
+    ledPatternState = 2;
     allOFF(true);
   }
 
@@ -1954,14 +1954,15 @@ void StarWarsIntro(unsigned long time_delay, uint8_t loops, CRGB color, unsigned
               leds[33]=0x000000;
               leds[24]=0x000000; ledPatternState=5; updateLed = 1; break;
       case 5: allOFF(false);
-			  fill_row(2, color, 100); 
+	      fill_row(4, color); 
+	      fill_row(2, color, 100); 
               // Turn off some pixels to shrink row 2
               leds[14]=0x000000;
               leds[15]=0x000000;
               leds[22]=0x000000;
               leds[23]=0x000000;
               ledPatternState=6; updateLed = 1; break;
-      case 6: allOFF(false); 
+       case 6: allOFF(false); 
               //fill_row(5, color);
               fill_row(3, color);
               leds[33]=0x000000;
