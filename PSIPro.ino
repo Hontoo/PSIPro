@@ -1498,7 +1498,7 @@ void radar(CRGB color, unsigned long time_delay, int loops, unsigned long runtim
   }
 }
 
-void swipe() {
+void swipe(CRGB alt_2nd_color = secondary_color()) {
 
   // We set this to false as we're not running a pattern
   // Yes, I know the swipe is a pattern, but it's the default pattern
@@ -1517,18 +1517,18 @@ void swipe() {
           if (selection < CHANCE_SECONDARY_FULL) {
             DEBUG_PRINT_LN("Selected full color");
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = secondary_color();
+              overlayColors[i] = alt_2nd_color;
             }
           } else if (selection < CHANCE_SECONDARY_FULL + CHANCE_SECONDARY_PARTIAL) {
             DEBUG_PRINT_LN("Selected partial secondary, with rest primary");
             int totalColumnsLit = random(SECONDARY_PARTIAL_LINES_MIN, SECONDARY_PARTIAL_LINES_MAX);
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = i > COLUMNS - totalColumnsLit - 1 ? secondary_color() : primary_color();
+              overlayColors[i] = i > COLUMNS - totalColumnsLit - 1 ? alt_2nd_color : primary_color();
             }
           } else {
             DEBUG_PRINT_LN("Selected partial secondary, rest off");
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? secondary_color() : secondary_off_color();
+              overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? alt_2nd_color : secondary_off_color();
             }
           }
 
@@ -2134,6 +2134,8 @@ void runPattern(int pattern) {
       allOFF(true);
       break;
     case 1:              //  1 = Default Swipe Pattern
+      //For a random secondary color use this as a parameter:
+      // CHSV(random8(),255,255)
       swipe();
       break;
     case 2:             // Flash Panel (4s)
