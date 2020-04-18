@@ -162,7 +162,7 @@
  *  Command xPy - Sets various board parameters.
  *                If x is 0, Set the alwaysOn behavior of the panel
  *                  The default mode for the panel is to display command sequences for 
- *                  a given time, then revert to the default pattern.  
+ *                  a given time, then revert to the default pattern (swipe).  
  *                  By sending the xPy command, this can be changed.
  *                  y is either 0 or 1 (default or always on mode)
  *                  0P0 - Default mode, where default pattern is restored after the sequence plays
