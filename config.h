@@ -1,4 +1,4 @@
-// Release version 1.1.01
+// Release version 1.1.02
 
 ///////////////////////////////////////////////////
 //////////// PSI CONFIGURATION ////////////////////
@@ -54,29 +54,29 @@ uint8_t defaultPattern = 1; //Mode 1 is Swipe
 // visible before switching back to the primary color.
 // A random value between MINIMUM and MAXIMUM will be used.
 
-#define SECONDARY_COLOR_DURATION_MINIMUM 5000  // Default 4000
-#define SECONDARY_COLOR_DURATION_MAXIMUM 12000 // Default 12000
+#define SECONDARY_COLOR_DURATION_MINIMUM 4000   // Default 4000
+#define SECONDARY_COLOR_DURATION_MAXIMUM 12000  // Default 12000
 
 // Speed range of the swipe animation. Longer delay means
 // slower animation speed. 
 
-#define SWIPE_DELAY_MINIMUM 20    // Default 20
-#define SWIPE_DELAY_MAXIMUM 50    // Default 50
+#define SWIPE_DELAY_MINIMUM 20                  // Default 20
+#define SWIPE_DELAY_MAXIMUM 50                  // Default 50
 
 // Define the chance proportion between the various options for
 // the secondary color. Increasing a value compared to the others increases
 // the likelihood of that option occuring. If the chance for an option is 
 // set to 0, it will not be selected.
 
-#define CHANCE_SECONDARY_FULL 6
-#define CHANCE_SECONDARY_PARTIAL 4
-#define CHANCE_SECONDARY_PARTIAL_OFF 6
+#define CHANCE_SECONDARY_FULL 6                 // Default 6
+#define CHANCE_SECONDARY_PARTIAL 4              // Default 3
+#define CHANCE_SECONDARY_PARTIAL_OFF 6          // Default 6
 
 // How many columns to display the secondary color.
 
-#define SECONDARY_PARTIAL_LINES_MIN 3 //The remainder will be the primary color.
-#define SECONDARY_PARTIAL_LINES_MAX 6 //The remainder will be the primary color.
-#define SECONDARY_PARTIAL_OFF_LINES 5 //The remainder will be off.
+#define SECONDARY_PARTIAL_LINES_MIN 3 //The remainder will be the primary color.  Default 3
+#define SECONDARY_PARTIAL_LINES_MAX 6 //The remainder will be the primary color.  Default 6
+#define SECONDARY_PARTIAL_OFF_LINES 5 //The remainder will be off.                Default 5
 
 // Use the jumpers on the PSI CPU board to set Front colors (jumper off)
 // or Rear colors (jumper on).
@@ -84,16 +84,16 @@ uint8_t defaultPattern = 1; //Mode 1 is Swipe
 // Use the following settings to adjust the colors for font and rear.
 
 // Set colors for the front PSI.
-                                            // Default colors
-CRGB frontPrimaryColor = CRGB(0, 0, 255);   // Blue (0, 0, 255)
-CRGB frontSecondaryColor = CRGB(255, 0, 0); // Red  (255, 0, 0)
-CRGB frontSecondaryOffColor = CRGB::Black;  // Off Black
+                                                // Default colors
+CRGB frontPrimaryColor = CRGB(0, 0, 255);       // Blue (0, 0, 255)
+CRGB frontSecondaryColor = CRGB(255, 0, 0);     // Red  (255, 0, 0)
+CRGB frontSecondaryOffColor = CRGB::Black;      // Off Black
 
 // Colors for the rear PSI
-                                              // Default colors
-CRGB rearPrimaryColor = CRGB(0, 255, 0);      // Green  (0, 255, 0)
-CRGB rearSecondaryColor = CRGB(200, 170, 0);  // Yellow (200, 170, 0)
-CRGB rearSecondaryOffColor = CRGB::Black;     // Off Black
+                                                // Default colors
+CRGB rearPrimaryColor = CRGB(0, 255, 0);        // Green  (0, 255, 0)
+CRGB rearSecondaryColor = CRGB(200, 170, 0);    // Yellow (200, 170, 0)
+CRGB rearSecondaryOffColor = CRGB::Black;       // Off Black
 
 #define JUMP_FRONT_REAR 14
 
@@ -130,7 +130,7 @@ CRGB secondary_off_color() {
 // If USB_SERIAL is defined, the Serial port on the USB of the 
 // Pro Micro will be used for communication, and debug output
 // Uncomment this if you want to debug, add new patterns etc,
-// and are working via USB.  Note the brigtness warning on the main
+// and are working via USB.  Note the brightness warning on the main
 // sketch tab! The normal mode is that any serial control device (MarcDuino,
 // STEALTH etc) will be connected to the PSI via the header pins on the
 // PSI PCB by default.  These pins are referred to as Serial1.
@@ -141,7 +141,7 @@ CRGB secondary_off_color() {
 // as the Pro Mini, then you will want to uncomment this line to ensure
 // the sketch uses Serial and not Serial1 for communication.  
 
-#define USB_SERIAL
+//#define USB_SERIAL
 
 
 ///////////////////////////////////////////////////
@@ -166,7 +166,7 @@ byte I2CAdress = 22;
 ///////////////////////////////////////////////////////
 
 // This is Neil's personal setup ... probably don't play with this!
-#define NEIL_PERSONAL_DEBUG
+//#define NEIL_PERSONAL_DEBUG
 #ifdef NEIL_PERSONAL_DEBUG
   #define DEBUG       // Prints Debug Strings to help debugging
   #define USB_SERIAL  // Sets the Serial to use the USB port for sending and receiving commands instead of the TxRx on the board.

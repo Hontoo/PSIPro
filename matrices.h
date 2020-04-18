@@ -1,12 +1,12 @@
 //Matrices for specialized display patterns
-// Release version 1.1.01
+// Release version 1.1.02
 
 //Capital Letter "I"
 const byte LetterI[] PROGMEM = 
 {
     0,1,1,1,1,0,  
   0,0,0,1,1,0,0,0,
-1,0,0,0,1,1,0,0,0,0, 
+0,0,0,0,1,1,0,0,0,0, 
 0,0,0,0,1,1,0,0,0,0,
   0,0,0,1,1,0,0,0,  
     0,1,1,1,1,0,   

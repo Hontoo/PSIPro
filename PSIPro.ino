@@ -15,6 +15,13 @@
  *
  *  Version History :
  *  
+ *  Version 1.1.02 18th April 2020
+ *    
+ *    Changes to swipe() 
+ *      Add random secondary color ability
+ *      Wont display moving secondary_off_color column
+ *      Randomize 2nd color not presenting
+ *      
  *  Version 1.1.01 16th April 2020
  *  
  *    Correct comment typos
@@ -1498,7 +1505,12 @@ void radar(CRGB color, unsigned long time_delay, int loops, unsigned long runtim
   }
 }
 
-void swipe() {
+void swipe(CRGB alt_2nd_color = secondary_color()) {
+
+  // Chance secondary color will not display 
+  if(random(0,100) < 50) {    // Default 50
+    alt_2nd_color = secondary_off_color();
+  }
 
   // We set this to false as we're not running a pattern
   // Yes, I know the swipe is a pattern, but it's the default pattern
@@ -1517,18 +1529,18 @@ void swipe() {
           if (selection < CHANCE_SECONDARY_FULL) {
             DEBUG_PRINT_LN("Selected full color");
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = secondary_color();
+              overlayColors[i] = alt_2nd_color;
             }
           } else if (selection < CHANCE_SECONDARY_FULL + CHANCE_SECONDARY_PARTIAL) {
             DEBUG_PRINT_LN("Selected partial secondary, with rest primary");
             int totalColumnsLit = random(SECONDARY_PARTIAL_LINES_MIN, SECONDARY_PARTIAL_LINES_MAX);
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = i > COLUMNS - totalColumnsLit - 1 ? secondary_color() : primary_color();
+              overlayColors[i] = i > COLUMNS - totalColumnsLit - 1 ? alt_2nd_color : primary_color();
             }
           } else {
             DEBUG_PRINT_LN("Selected partial secondary, rest off");
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? secondary_color() : secondary_off_color();
+              overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? alt_2nd_color : secondary_off_color();
             }
           }
 
@@ -1574,7 +1586,11 @@ void swipe() {
     for (int i = 0; i < COLUMNS; i++) {
       CRGB columnColor = primaryColor;
       if (i >= switchPoint) {
-        columnColor = overlayColors[i - switchPoint];
+        if (overlayColors[i - switchPoint] == secondary_off_color()) {
+          columnColor = overlayColors[i];
+        } else {
+          columnColor = overlayColors[i - switchPoint];
+        }
       }
       fill_column(i, columnColor);
     }
@@ -2142,6 +2158,8 @@ void runPattern(int pattern) {
       allOFF(true);
       break;
     case 1:              //  1 = Default Swipe Pattern
+      //This can be used for a random secondary color
+      //CHSV(random8(),255,255)
       swipe();
       break;
     case 2:             // Flash Panel (4s)
