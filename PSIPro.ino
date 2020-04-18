@@ -164,7 +164,7 @@
  *                  The default mode for the panel is to display command sequences for 
  *                  a given time, then revert to the default pattern.  
  *                  By sending the xPy command, this can be changed.
- *                  Y is either 0 or 1 (default or always on mode)
+ *                  y is either 0 or 1 (default or always on mode)
  *                  0P0 - Default mode, where default pattern is restored after the sequence plays
  *                  0P1 - The sequence continues to play until a new comand is received.
  *                  
