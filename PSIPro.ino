@@ -1945,84 +1945,61 @@ void StarWarsIntro(unsigned long time_delay, uint8_t loops, CRGB color, unsigned
   if (checkDelay()) {
     switch (ledPatternState) {
       // Note we set the display timeout large here so that the image stays displayed.
-      case 0: fill_row(5, color);
-              ledPatternState=1; updateLed = 1; break;
-      case 1: fill_row(4, color); 
-              ledPatternState=2; updateLed = 1; break;
-      case 2: allOFF(false); 
-              fill_row(4, color);
-              fill_row(3, color);
-      //Example turn off specific leds to create receding text. (See config.h for led matrix)
-              leds[33]=0x000000; 
-              leds[24]=0x000000;
-              ledPatternState=3; updateLed = 1; break;
-      case 3: allOFF(false);
-              fill_row(5, color);
-              fill_row(3, color);
+      case 0: fill_row(5, color); ledPatternState=1; updateLed = 1; break;
+      case 1: allOFF(false);      ledPatternState=2; updateLed = 1; break;
+      case 2: fill_row(4, color); ledPatternState=3; updateLed = 1; break;
+      case 3: allOFF(false);      ledPatternState=4; updateLed = 1; break;
+      case 4: //fill_row(5, color); 
+              fill_row(3, color); 
               leds[33]=0x000000;
-              leds[24]=0x000000;
-              fill_row(2, color, 100);
-              leds[14]=0x000000;
-              leds[15]=0x000000;
-              leds[22]=0x000000;
-              leds[23]=0x000000;
-              ledPatternState=4; updateLed = 1; break;
-      case 4: allOFF(false);
-              fill_row(4, color);
-              fill_row(2, color, 100);
-              leds[14]=0x000000;
-              leds[15]=0x000000;
-              leds[22]=0x000000;
-              leds[23]=0x000000;
-              fill_row(1, color, 50);
-              leds[13]=0x000000;
-              leds[12]=0x000000;
-              leds[7]=0x000000;
-              leds[6]=0x000000;
-              ledPatternState=5; updateLed = 1; break;
+              leds[24]=0x000000; ledPatternState=5; updateLed = 1; break;
       case 5: allOFF(false);
-              fill_row(3, color);
-              leds[33]=0x000000;
-              leds[24]=0x000000;
-              fill_row(1, color, 50);
-              leds[13]=0x000000;
-              leds[12]=0x000000;
-              leds[7]=0x000000;
-              leds[6]=0x000000;
-              fill_row(0, color, 20);
-              leds[0]=0x000000;
-              leds[1]=0x000000;
-              leds[4]=0x000000;
-              leds[5]=0x000000;
+			  fill_row(2, color, 100); 
+              // Turn off some pixels to shrink row 2
+              leds[14]=0x000000;
+              leds[15]=0x000000;
+              leds[22]=0x000000;
+              leds[23]=0x000000;
               ledPatternState=6; updateLed = 1; break;
       case 6: allOFF(false); 
-              fill_row(2, color, 100);
+              //fill_row(5, color);
+              fill_row(3, color);
+              leds[33]=0x000000;
+              leds[24]=0x000000;
+              fill_row(2, color, 100); 
+              // Turn off some pixels to shrink row 2
               leds[14]=0x000000;
               leds[15]=0x000000;
               leds[22]=0x000000;
               leds[23]=0x000000;
-              fill_row(0, color, 20);
-              leds[0]=0x000000;
-              leds[1]=0x000000;
-              leds[4]=0x000000;
-              leds[5]=0x000000;
-              ledPatternState=7; updateLed = 1; break;
-      case 7: allOFF(false); 
-              fill_row(1, color, 50);
+              fill_row(1, color, 20);
+              // Turn off some pixels to shrink row 1 
               leds[13]=0x000000;
               leds[12]=0x000000;
               leds[7]=0x000000;
               leds[6]=0x000000;
-              ledPatternState=8; updateLed = 1; break;
-      case 8: allOFF(false); 
-              fill_row(0, color, 20);
+              ledPatternState=7; updateLed = 1; break;
+      case 7: allOFF(false); 
+              fill_row(4, color);
+              fill_row(2, color, 100);
+              // Turn off some pixels to shrink row 2
+              leds[14]=0x000000;
+              leds[15]=0x000000;
+              leds[22]=0x000000;
+              leds[23]=0x000000;
+              fill_row(1, color, 20);
+              // Turn off some pixels to shrink row 1 
+              leds[13]=0x000000;
+              leds[12]=0x000000;
+              leds[7]=0x000000;
+              leds[6]=0x000000;
+              fill_row(0, color, 12);
+              // Turn off some pixels to shrink row 0
               leds[0]=0x000000;
               leds[1]=0x000000;
               leds[4]=0x000000;
-              leds[5]=0x000000;
-              ledPatternState=9; updateLed = 1; break;
-      case 9: allOFF(false); 
-              ledPatternState=0; updateLed = 1; globalPatternLoops--; break;
+              leds[5]=0x000000;ledPatternState=8; updateLed = 1; break;
+      case 8: ledPatternState=6; updateLed = 0; globalPatternLoops--; break;
       default: {
           // Do nothing.
           break;
@@ -2069,9 +2046,9 @@ bool checkDelay()
 //set the global pattern timeout
 void set_global_timeout(unsigned long timeout)
 {
-  // use 256 to set as "always on"
-  // 256 = ~4 min
-  // square(4min) > 18 hours!
+// use 256 to set as "always on"
+// 256 sec == ~4 mins. To make the pattern run longer, square the value
+// resulting in ~18 hours
   if (timeout == 256) timeout *= timeout;
   globalTimeout = millis() + (timeout * 1000);
   DEBUG_PRINT("Current time "); DEBUG_PRINT_LN(millis());
