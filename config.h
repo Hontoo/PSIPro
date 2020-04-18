@@ -1,23 +1,25 @@
-// Release version 1.1.01
+// Release version 1.2
 
 ///////////////////////////////////////////////////
-//////////// PSI CONFIGURATION ////////////////////
+//////////////// PSI CONFIGURATION ////////////////
 ///////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////
-//////////// Timer Settings //////////////////////
+///////////////// Timer Settings /////////////////
 /////////////////////////////////////////////////
 
 // The numbered pattern Modes have various preprogrammed lengths
 // to match those of the Teeces Logic patterns. Some of the additional Modes 
 // have indefinite lengths.  If you want ALL pattern Modes called using the
-// Mode (T) command to remain on indefinitely, then set 'alwaysOn' below to true. 
-// The default is false, meaning that each selected pattern Mode will remain on for 
-// its set time, and then will return to the default pattern Mode. This can also
+// Mode (T) command to remain on, then set 'alwaysOn' below to true. 
+// The default is false, each selected pattern Mode will remain on for 
+// its set time, and then return to the default pattern (swipe) Mode. 
+// This can also ????
 // The Current Teeces interface runs at a mind numbingly slow 2400 only!
 
 bool alwaysOn = false;
+
 
 // If your JEDI Device can send at 9600 baud, uncomment this line.
 // The Current Teeces interface runs at a mindnumbingly slow 2400 only!
@@ -26,7 +28,7 @@ bool alwaysOn = false;
 
 
 ///////////////////////////////////////////////////
-//////////// SET DEFAULT PATTERN /////////////////
+////////////// SET DEFAULT PATTERN ///////////////
 /////////////////////////////////////////////////
 
 // Any display Mode can be the default Mode the PSI returns to
@@ -34,6 +36,7 @@ bool alwaysOn = false;
 // is Swipe.  Use this to set the default Mode number.
 
 uint8_t defaultPattern = 1; //Mode 1 is Swipe
+
 
 ///////////////////////////////////////////////////
 //////////// SWIPE MODE SETTINGS /////////////////
