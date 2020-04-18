@@ -165,7 +165,7 @@
  *                  a given time, then revert to the default pattern (swipe).  
  *                  By sending the xPy command, this can be changed.
  *                  y is either 0 or 1 (default or always on mode)
- *                  0P0 - Default mode, where default pattern is restored after the sequence plays
+ *                  0P0 - Default mode, where default pattern (swipe) is restored after the sequence plays
  *                  0P1 - The sequence continues to play until a new comand is received.
  *                  
  *                If x is 1, Set the POT mode
