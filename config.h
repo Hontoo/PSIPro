@@ -216,7 +216,6 @@ byte I2CAdress = 22;
 
 // Command processing stuff
 // maximum number of characters in a command (63 chars since we need the null termination)
-
 #define CMD_MAX_LENGTH 64 
 
 // memory for command string processing
