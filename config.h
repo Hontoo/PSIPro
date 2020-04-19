@@ -1,23 +1,24 @@
-// Release version 1.1.02
+// Release version 1.3
 
 ///////////////////////////////////////////////////
-//////////// PSI CONFIGURATION ////////////////////
+//////////////// PSI CONFIGURATION ////////////////
 ///////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////
-//////////// Timer Settings //////////////////////
+///////////////// Timer Settings /////////////////
 /////////////////////////////////////////////////
 
 // The numbered pattern Modes have various preprogrammed lengths
 // to match those of the Teeces Logic patterns. Some of the additional Modes 
 // have indefinite lengths.  If you want ALL pattern Modes called using the
-// Mode (T) command to remain on indefinitely, then set 'alwaysOn' below to true. 
-// The default is false, meaning that each selected pattern Mode will remain on for 
-// its set time, and then will return to the default pattern Mode. This can also
+// Mode (T) command to remain on, then set 'alwaysOn' below to true. 
+// The default is false, each selected pattern Mode will remain on for 
+// its set time, and then will return to the default pattern (swipe) Mode.
 // The Current Teeces interface runs at a mind numbingly slow 2400 only!
 
 bool alwaysOn = false;
+
 
 // If your JEDI Device can send at 9600 baud, uncomment this line.
 // The Current Teeces interface runs at a mindnumbingly slow 2400 only!
@@ -26,7 +27,7 @@ bool alwaysOn = false;
 
 
 ///////////////////////////////////////////////////
-//////////// SET DEFAULT PATTERN /////////////////
+////////////// SET DEFAULT PATTERN ///////////////
 /////////////////////////////////////////////////
 
 // Any display Mode can be the default Mode the PSI returns to
@@ -35,8 +36,9 @@ bool alwaysOn = false;
 
 uint8_t defaultPattern = 1; //Mode 1 is Swipe
 
+
 ///////////////////////////////////////////////////
-//////////// SWIPE MODE SETTINGS /////////////////
+////////////// SWIPE MODE SETTINGS /////////////// 
 /////////////////////////////////////////////////
 
 // Colors are divded into Primary (Default is Blue for the 
@@ -47,8 +49,9 @@ uint8_t defaultPattern = 1; //Mode 1 is Swipe
 // before switching to the secondary color.
 // A random value between MINIMUM and MAXIMUM will be used.
 
-#define PRIMARY_COLOR_DURATION_MINIMUM 2000  // Default 2000
-#define PRIMARY_COLOR_DURATION_MAXIMUM 10000 // Default 10000
+#define PRIMARY_COLOR_DURATION_MINIMUM 2000     // Default 2000
+#define PRIMARY_COLOR_DURATION_MAXIMUM 10000    // Default 10000
+
 
 // Number of milliseconds that the secondary color will be
 // visible before switching back to the primary color.
@@ -57,32 +60,45 @@ uint8_t defaultPattern = 1; //Mode 1 is Swipe
 #define SECONDARY_COLOR_DURATION_MINIMUM 4000   // Default 4000
 #define SECONDARY_COLOR_DURATION_MAXIMUM 12000  // Default 12000
 
+
 // Speed range of the swipe animation. Longer delay means
 // slower animation speed. 
 
 #define SWIPE_DELAY_MINIMUM 20                  // Default 20
 #define SWIPE_DELAY_MAXIMUM 50                  // Default 50
 
-// Define the chance proportion between the various options for
-// the secondary color. Increasing a value compared to the others increases
-// the likelihood of that option occuring. If the chance for an option is 
-// set to 0, it will not be selected.
 
+// Define the weighted chance between options.
+// Increasing a value compared to the others increases
+// the likelihood of that option occuring. 
+// If the chance for an option is set to 0, it will not be selected.
+
+
+//Seondary color partly appearing
 #define CHANCE_SECONDARY_FULL 6                 // Default 6
 #define CHANCE_SECONDARY_PARTIAL 4              // Default 3
 #define CHANCE_SECONDARY_PARTIAL_OFF 6          // Default 6
 
-// How many columns to display the secondary color.
 
+// Chance secondary color is not displayed
+#define CHANCE_SECONDARY_DISPLAYED_OFF 10        // Default 0
+#define CHANCE_SECONDARY_DISPLAYED_ON  10       // Default 10
+
+
+// How many columns to display the secondary color
 #define SECONDARY_PARTIAL_LINES_MIN 3 //The remainder will be the primary color.  Default 3
 #define SECONDARY_PARTIAL_LINES_MAX 6 //The remainder will be the primary color.  Default 6
 #define SECONDARY_PARTIAL_OFF_LINES 5 //The remainder will be off.                Default 5
 
-// Use the jumpers on the PSI CPU board to set Front colors (jumper off)
-// or Rear colors (jumper on).
 
-// Use the following settings to adjust the colors for font and rear.
+// Use the jumper on the PSI CPU board to set PSI colors:
+// OFF: Front
+// ON :  Rear
 
+#define JUMP_FRONT_REAR 14
+
+
+// Use the following settings to adjust the colors for PSI.
 // Set colors for the front PSI.
                                                 // Default colors
 CRGB frontPrimaryColor = CRGB(0, 0, 255);       // Blue (0, 0, 255)
@@ -95,10 +111,8 @@ CRGB rearPrimaryColor = CRGB(0, 255, 0);        // Green  (0, 255, 0)
 CRGB rearSecondaryColor = CRGB(200, 170, 0);    // Yellow (200, 170, 0)
 CRGB rearSecondaryOffColor = CRGB::Black;       // Off Black
 
-#define JUMP_FRONT_REAR 14
 
 // Set the colors based on the pin being jumpered to ground.
-
 CRGB primary_color() {
   if (digitalRead(JUMP_FRONT_REAR)) {
     return frontPrimaryColor;
@@ -124,7 +138,7 @@ CRGB secondary_off_color() {
 }
 
 ///////////////////////////////////////////////////
-//////////// Serial SETTINGS ///////////////////// 
+//////////////// Serial SETTINGS /////////////////
 /////////////////////////////////////////////////
 
 // If USB_SERIAL is defined, the Serial port on the USB of the 
@@ -166,7 +180,7 @@ byte I2CAdress = 22;
 ///////////////////////////////////////////////////////
 
 // This is Neil's personal setup ... probably don't play with this!
-//#define NEIL_PERSONAL_DEBUG
+#define NEIL_PERSONAL_DEBUG
 #ifdef NEIL_PERSONAL_DEBUG
   #define DEBUG       // Prints Debug Strings to help debugging
   #define USB_SERIAL  // Sets the Serial to use the USB port for sending and receiving commands instead of the TxRx on the board.
@@ -182,8 +196,8 @@ byte I2CAdress = 22;
 
 //Setup Debug stuff for Real Arduino Pro Micros
 #ifdef DEBUG
-    #define DEBUG_PRINT_LN(msg)  serialPort->println(msg)
-    #define DEBUG_PRINT(msg)  serialPort->print(msg)
+  #define DEBUG_PRINT_LN(msg)  serialPort->println(msg)
+  #define DEBUG_PRINT(msg)  serialPort->print(msg)
 #else
   #define DEBUG_PRINT_LN(msg)
   #define DEBUG_PRINT(msg)
@@ -221,6 +235,7 @@ char cmdString[CMD_MAX_LENGTH];
 
 // POT Averager
 #define POT_AVG_SIZE 30
+
 // Change this if you get flicker.  A larger number will reduce POT noise.
 #define POT_VARIANCE_LEVEL 2
 uint16_t POTReadings[POT_AVG_SIZE];

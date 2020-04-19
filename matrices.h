@@ -1,7 +1,7 @@
-//Matrices for specialized display patterns
-// Release version 1.1.02
+// Matrices for specialized display patterns
+// Release version 1.2
 
-//Capital Letter "I"
+// Capital Letter "I"
 const byte LetterI[] PROGMEM = 
 {
     0,1,1,1,1,0,  
@@ -13,7 +13,7 @@ const byte LetterI[] PROGMEM =
 };
 
 
-//Heart Shape
+// Heart Shape
 const byte Heart[] PROGMEM = 
 {
     0,0,0,0,0,0,  
@@ -25,7 +25,7 @@ const byte Heart[] PROGMEM =
 };
 
 
-//Capital Letter "U"
+// Capital Letter "U"
 const byte LetterU[] PROGMEM = 
 {
     1,1,0,0,1,1,  
@@ -37,7 +37,7 @@ const byte LetterU[] PROGMEM =
 };
 
 
-//Rebel symbol
+// Rebel symbol
 const byte rebel[] PROGMEM = 
 {
     0,0,1,1,0,0,  
@@ -49,7 +49,7 @@ const byte rebel[] PROGMEM =
 };
 
 
-//VU Meter
+// VU Meter
 const byte VUChart[] PROGMEM =
 {
     4,4,4,4,4,4,  
@@ -61,7 +61,7 @@ const byte VUChart[] PROGMEM =
 };
 
 
-//Pulse (Rear PSI)
+// Pulse (Rear PSI)
 const byte pulse[] PROGMEM = 
 {
     0,0,0,0,0,1,      // 0-5

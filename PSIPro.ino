@@ -11,21 +11,21 @@
  *    
  *  BEFORE BUILDING OR UPLOADING THIS SKETCH, be sure that the config.h and matrices.h files are in the skectch folder. 
  *
- *  Version 1.1.01
+ *  Version 1.3
  *
  *  Version History :
  *  
- *  Version 1.1.02 18th April 2020
- *    
+ *  Version 1.3 18th April 2020
+ *      
  *    Changes to swipe() 
  *      Add random secondary color ability
  *      Wont display moving secondary_off_color column
  *      Randomize 2nd color not presenting
  *      
- *  Version 1.1.01 16th April 2020
+ *  Version 1.2 16th April 2020
  *  
  *    Correct comment typos
- *    Always on was actually only on for 17 min. Changed to +4 hrs.
+ *    Always on was actually only on for 17 min. Changed to +18 hrs.
  *    Change Star Wars Intro
  *  
  *  Version 1.1 - 13th April 2020
@@ -169,10 +169,10 @@
  *  Command xPy - Sets various board parameters.
  *                If x is 0, Set the alwaysOn behavior of the panel
  *                  The default mode for the panel is to display command sequences for 
- *                  a given time, then revert to the default pattern.  
+ *                  a given time, then revert to the default pattern (swipe).  
  *                  By sending the xPy command, this can be changed.
- *                  Y is either 0 or 1 (default or always on mode)
- *                  0P0 - Default mode, where default pattern is restored after the sequence plays
+ *                  y is either 0 or 1 (default or always on mode)
+ *                  0P0 - Default mode, where default pattern (swipe) is restored after the sequence plays
  *                  0P1 - The sequence continues to play until a new comand is received.
  *                  
  *                If x is 1, Set the POT mode
@@ -361,21 +361,21 @@ void setup() {
   // This is set in config.h
   uint16_t baudrate;
 
-  #ifdef _9600BAUDSJEDI_
-    baudrate=9600;
-  #else
-    baudrate=2400;
-  #endif
+#ifdef _9600BAUDSJEDI_
+  baudrate=9600;
+#else
+  baudrate=2400;
+#endif
 
   // Setup for Official Pro Micro.  The offical PRO can switch like this.
-  #ifdef USB_SERIAL
-    // If we want to debug on the USB, then we use Serial
-    Serial.begin(baudrate);
-    serialPort=&Serial;
-  #else
-    Serial1.begin(baudrate);
-    serialPort=&Serial1;
-  #endif
+#ifdef USB_SERIAL
+  // If we want to debug on the USB, then we use Serial
+  Serial.begin(baudrate);
+  serialPort=&Serial;
+#else
+  Serial1.begin(baudrate);
+  serialPort=&Serial1;
+#endif
 
   // READ the default settings from the EEPROM
   byte value;
@@ -1507,8 +1507,8 @@ void radar(CRGB color, unsigned long time_delay, int loops, unsigned long runtim
 
 void swipe(CRGB alt_2nd_color = secondary_color()) {
 
-  // Chance secondary color will not display 
-  if(random(0,100) < 50) {    // Default 50
+  // Chance secondary color will not display added globals to make configuration easier.
+  if(CHANCE_SECONDARY_DISPLAYED_OFF < random(0, CHANCE_SECONDARY_DISPLAYED_ON + CHANCE_SECONDARY_DISPLAYED_OFF)) {    
     alt_2nd_color = secondary_off_color();
   }
 
@@ -1523,7 +1523,6 @@ void swipe(CRGB alt_2nd_color = secondary_color()) {
           ledState = PrimaryToSecondary;
           swipeDelay = random(SWIPE_DELAY_MINIMUM, SWIPE_DELAY_MAXIMUM);
           DEBUG_PRINT_LN("Switching to secondary color");
-
           int totalChance = CHANCE_SECONDARY_FULL + CHANCE_SECONDARY_PARTIAL + CHANCE_SECONDARY_PARTIAL_OFF;
           int selection = random(totalChance);
           if (selection < CHANCE_SECONDARY_FULL) {
@@ -1543,7 +1542,6 @@ void swipe(CRGB alt_2nd_color = secondary_color()) {
               overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? alt_2nd_color : secondary_off_color();
             }
           }
-
           // Intentional fall through
         }
       case PrimaryToSecondary:
@@ -1579,12 +1577,10 @@ void swipe(CRGB alt_2nd_color = secondary_color()) {
 
   if (updateLed || ((millis() - lastLedUpdate) > 100)) {
     lastLedUpdate = millis();
-
-    CRGB primaryColor = primary_color();
     uint8_t switchPoint = COLUMNS - visibleSecondaryColumns;
+    CRGB columnColor = primary_color();
 
     for (int i = 0; i < COLUMNS; i++) {
-      CRGB columnColor = primaryColor;
       if (i >= switchPoint) {
         if (overlayColors[i - switchPoint] == secondary_off_color()) {
           columnColor = overlayColors[i];
@@ -1594,7 +1590,6 @@ void swipe(CRGB alt_2nd_color = secondary_color()) {
       }
       fill_column(i, columnColor);
     }
-
     FastLED.show(brightness());
   }
 }
@@ -2094,7 +2089,7 @@ bool checkDelay()
 void set_global_timeout(unsigned long timeout)
 {
   // use 256 to set as "always on"
-  // 256 = ~4 min
+  // 256 sec == ~4 min for a longer interval square it
   // square(4min) > 18 hours!
   if (timeout == 256) timeout *= timeout;
   globalTimeout = millis() + (timeout * 1000);
