@@ -11,10 +11,17 @@
  *    
  *  BEFORE BUILDING OR UPLOADING THIS SKETCH, be sure that the config.h and matrices.h files are in the skectch folder. 
  *
- *  Version 1.2
+ *  Version 1.3
  *
  *  Version History :
  *  
+ *  Version 1.3 18th April 2020
+ *    
+ *    Changes to swipe() 
+ *      Add random secondary color ability
+ *      Wont display moving secondary_off_color column
+ *      Randomize 2nd color not presenting
+ *      
  *  Version 1.2 16th April 2020
  *  
  *    Correct comment typos
@@ -164,7 +171,11 @@
  *                  The default mode for the panel is to display command sequences for 
  *                  a given time, then revert to the default pattern (swipe).  
  *                  By sending the xPy command, this can be changed.
+<<<<<<< Updated upstream
  *                  y is either 0 or 1 (default or always on mode)
+=======
+ *                  Y is either 0 or 1 (default or always on mode)
+>>>>>>> Stashed changes
  *                  0P0 - Default mode, where default pattern (swipe) is restored after the sequence plays
  *                  0P1 - The sequence continues to play until a new comand is received.
  *                  
@@ -331,7 +342,7 @@ void displayMatrixColor(byte PROGMEM * matrix, CRGB fgcolor, CRGB bgcolor, bool 
 
 // Function prototype for helper functions
 void fill_row(uint8_t row, CRGB color, uint8_t scale_brightness=0);
-void fill_column(uint8_t column, CRGB color, uint8_t scale_brightness=0);
+void fill_column(uint8_t column, CRGB color, uint8_t scale_brightness=0); // CONCEPT , uint8_t single_bulb_off = CHANCE_RANDOM_LED_OFF);
 void allOFF(bool showLED, unsigned long runtime=0);
 void allON(CRGB color, bool showLED, unsigned long runtime=0);
 
@@ -354,21 +365,21 @@ void setup() {
   // This is set in config.h
   uint16_t baudrate;
 
-  #ifdef _9600BAUDSJEDI_
-    baudrate=9600;
-  #else
-    baudrate=2400;
-  #endif
+#ifdef _9600BAUDSJEDI_
+  baudrate=9600;
+#else
+  baudrate=2400;
+#endif
 
   // Setup for Official Pro Micro.  The offical PRO can switch like this.
-  #ifdef USB_SERIAL
-    // If we want to debug on the USB, then we use Serial
-    Serial.begin(baudrate);
-    serialPort=&Serial;
-  #else
-    Serial1.begin(baudrate);
-    serialPort=&Serial1;
-  #endif
+#ifdef USB_SERIAL
+  // If we want to debug on the USB, then we use Serial
+  Serial.begin(baudrate);
+  serialPort=&Serial;
+#else
+  Serial1.begin(baudrate);
+  serialPort=&Serial1;
+#endif
 
   // READ the default settings from the EEPROM
   byte value;
@@ -481,13 +492,20 @@ void allOFF(bool showLED, unsigned long runtime=0)
   }
 }
 
-void fill_column(uint8_t column, CRGB color, uint8_t scale_brightness=0) {
+void fill_column(uint8_t column, CRGB color, uint8_t scale_brightness=0){ // CONCEPT, uint8_t single_bulb_off = CHANCE_RANDOM_LED_OFF) {
   for (int i = 0; i < LEDS_PER_COLUMN; i++) {
     int8_t ledIndex = ledMatrix[column][i];
-    if (ledIndex != -1) {
-      leds[ledIndex] = color;
-      if (scale_brightness != 0) leds[ledIndex] %= scale_brightness;
-    }
+    leds[ledIndex] = color;
+    if (scale_brightness != 0) leds[ledIndex] %= scale_brightness;
+// CONCEPT
+//    if (ledIndex != -1) {
+//      if (random(0, single_bulb_off) < CHANCE_RANDOM_LED_ON) {
+//        leds[ledIndex] = color;
+//        if (scale_brightness != 0) leds[ledIndex] %= scale_brightness;
+//      } else {
+//        leds[ledIndex] = LED_OFF;
+//      }
+//    }
   }
 }
 
@@ -1498,7 +1516,16 @@ void radar(CRGB color, unsigned long time_delay, int loops, unsigned long runtim
   }
 }
 
-void swipe() {
+void swipe(CRGB alt_2nd_color = secondary_color()) {
+
+  // Chance secondary color will not display added globals to make configuration easier.
+  if(CHANCE_SECONDARY_DISPLAYED_OFF < random(0, CHANCE_SECONDARY_DISPLAYED_ON + CHANCE_SECONDARY_DISPLAYED_OFF)) {    
+    alt_2nd_color = secondary_off_color();
+  }
+
+  //int totalChance;
+  //int selection;
+  //int totalColumnsLit;
 
   // We set this to false as we're not running a pattern
   // Yes, I know the swipe is a pattern, but it's the default pattern
@@ -1517,21 +1544,20 @@ void swipe() {
           if (selection < CHANCE_SECONDARY_FULL) {
             DEBUG_PRINT_LN("Selected full color");
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = secondary_color();
+              overlayColors[i] = alt_2nd_color;
             }
           } else if (selection < CHANCE_SECONDARY_FULL + CHANCE_SECONDARY_PARTIAL) {
             DEBUG_PRINT_LN("Selected partial secondary, with rest primary");
             int totalColumnsLit = random(SECONDARY_PARTIAL_LINES_MIN, SECONDARY_PARTIAL_LINES_MAX);
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = i > COLUMNS - totalColumnsLit - 1 ? secondary_color() : primary_color();
+              overlayColors[i] = i > COLUMNS - totalColumnsLit - 1 ? alt_2nd_color : primary_color();
             }
           } else {
             DEBUG_PRINT_LN("Selected partial secondary, rest off");
             for (int i = 0; i < COLUMNS; i++) {
-              overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? secondary_color() : secondary_off_color();
+              overlayColors[i] = i > COLUMNS - SECONDARY_PARTIAL_OFF_LINES - 1 ? alt_2nd_color : secondary_off_color();
             }
           }
-
           // Intentional fall through
         }
       case PrimaryToSecondary:
@@ -1567,18 +1593,19 @@ void swipe() {
 
   if (updateLed || ((millis() - lastLedUpdate) > 100)) {
     lastLedUpdate = millis();
-
-    CRGB primaryColor = primary_color();
     uint8_t switchPoint = COLUMNS - visibleSecondaryColumns;
+    CRGB columnColor = primary_color();
 
     for (int i = 0; i < COLUMNS; i++) {
-      CRGB columnColor = primaryColor;
       if (i >= switchPoint) {
-        columnColor = overlayColors[i - switchPoint];
+        if (overlayColors[i - switchPoint] == secondary_off_color()) {
+          columnColor = overlayColors[i];
+        } else {
+          columnColor = overlayColors[i - switchPoint];
+        }
       }
-      fill_column(i, columnColor);
+      fill_column(i, columnColor); //CONCEPT , 0, random(0, CHANCE_RANDOM_LED_OFF + CHANCE_RANDOM_LED_ON));
     }
-
     FastLED.show(brightness());
   }
 }
@@ -1936,7 +1963,13 @@ void StarWarsIntro(unsigned long time_delay, uint8_t loops, CRGB color, unsigned
     globalPatternLoops = loops;
     if ((runtime != 0) && (!timingReceived)) set_global_timeout(runtime);
     if (timingReceived) set_global_timeout(commandTiming);
+<<<<<<< Updated upstream
     ledPatternState = 2;
+=======
+    ledPatternState = 0;
+
+    // Clear the display the first time through
+>>>>>>> Stashed changes
     allOFF(true);
   }
 
@@ -1945,12 +1978,27 @@ void StarWarsIntro(unsigned long time_delay, uint8_t loops, CRGB color, unsigned
   if (checkDelay()) {
     switch (ledPatternState) {
       // Note we set the display timeout large here so that the image stays displayed.
+<<<<<<< Updated upstream
       case 0: fill_row(5, color); ledPatternState=1; updateLed = 1; break;
       case 1: allOFF(false);      ledPatternState=2; updateLed = 1; break;
       case 2: fill_row(4, color); ledPatternState=3; updateLed = 1; break;
       case 3: allOFF(false);      ledPatternState=4; updateLed = 1; break;
       case 4: //fill_row(5, color); 
               fill_row(3, color); 
+=======
+      case 0: fill_row(5, color);
+              ledPatternState=1; updateLed = 1; break;
+      case 1: fill_row(4, color); ledPatternState=2; updateLed = 1; break;
+      case 2: allOFF(false); 
+              fill_row(4, color);
+              fill_row(3, color);
+              leds[33]=0x000000;
+              leds[24]=0x000000;
+              ledPatternState=3; updateLed = 1; break;
+      case 3: allOFF(false);
+              fill_row(5, color);
+              fill_row(3, color);
+>>>>>>> Stashed changes
               leds[33]=0x000000;
               leds[24]=0x000000; ledPatternState=5; updateLed = 1; break;
       case 5: allOFF(false);
@@ -2047,9 +2095,15 @@ bool checkDelay()
 //set the global pattern timeout
 void set_global_timeout(unsigned long timeout)
 {
+<<<<<<< Updated upstream
 // use 256 to set as "always on"
 // 256 sec == ~4 mins. To make the pattern run longer, square the value
 // resulting in ~18 hours
+=======
+  // use 256 to set as "always on"
+  // 256 sec == ~4 min
+  // square(4min) > 18 hours!
+>>>>>>> Stashed changes
   if (timeout == 256) timeout *= timeout;
   globalTimeout = millis() + (timeout * 1000);
   DEBUG_PRINT("Current time "); DEBUG_PRINT_LN(millis());
@@ -2112,6 +2166,8 @@ void runPattern(int pattern) {
       allOFF(true);
       break;
     case 1:              //  1 = Default Swipe Pattern
+      //This can be used for a random secondary color
+      //CHSV(random8(),255,255)
       swipe();
       break;
     case 2:             // Flash Panel (4s)

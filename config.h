@@ -1,4 +1,5 @@
-// Release version 1.2
+// Release version 1.3
+//345678901234567890123456789012345678901234567890123456789012345678901234567890
 
 ///////////////////////////////////////////////////
 //////////////// PSI CONFIGURATION ////////////////
@@ -50,58 +51,102 @@ uint8_t defaultPattern = 1; //Mode 1 is Swipe
 // before switching to the secondary color.
 // A random value between MINIMUM and MAXIMUM will be used.
 
-#define PRIMARY_COLOR_DURATION_MINIMUM 2000  // Default 2000
-#define PRIMARY_COLOR_DURATION_MAXIMUM 10000 // Default 10000
+#define PRIMARY_COLOR_DURATION_MINIMUM 2000     // Default 2000
+#define PRIMARY_COLOR_DURATION_MAXIMUM 10000    // Default 10000
+
 
 // Number of milliseconds that the secondary color will be
 // visible before switching back to the primary color.
 // A random value between MINIMUM and MAXIMUM will be used.
 
-#define SECONDARY_COLOR_DURATION_MINIMUM 5000  // Default 4000
-#define SECONDARY_COLOR_DURATION_MAXIMUM 12000 // Default 12000
+#define SECONDARY_COLOR_DURATION_MINIMUM 4000   // Default 4000
+#define SECONDARY_COLOR_DURATION_MAXIMUM 10000  // Default 12000
+
 
 // Speed range of the swipe animation. Longer delay means
 // slower animation speed. 
 
-#define SWIPE_DELAY_MINIMUM 20    // Default 20
-#define SWIPE_DELAY_MAXIMUM 50    // Default 50
+#define SWIPE_DELAY_MINIMUM 20                  // Default 20
+#define SWIPE_DELAY_MAXIMUM 50                  // Default 50
 
-// Define the chance proportion between the various options for
-// the secondary color. Increasing a value compared to the others increases
-// the likelihood of that option occuring. If the chance for an option is 
-// set to 0, it will not be selected.
 
-#define CHANCE_SECONDARY_FULL 6
-#define CHANCE_SECONDARY_PARTIAL 4
-#define CHANCE_SECONDARY_PARTIAL_OFF 6
+// Define the weighted chance between options.
+// Increasing a value compared to the others increases
+// the likelihood of that option occuring. 
+// If the chance for an option is set to 0, it will not be selected.
+
+// Secondary color partly appearing
+
+#define CHANCE_SECONDARY_FULL 6                 // Default 6
+#define CHANCE_SECONDARY_PARTIAL 3              // Default 3
+#define CHANCE_SECONDARY_PARTIAL_OFF 6          // Default 6
+
 
 // How many columns to display the secondary color.
 
-#define SECONDARY_PARTIAL_LINES_MIN 3 //The remainder will be the primary color.
-#define SECONDARY_PARTIAL_LINES_MAX 6 //The remainder will be the primary color.
-#define SECONDARY_PARTIAL_OFF_LINES 5 //The remainder will be off.
+#define SECONDARY_PARTIAL_LINES_MIN 3 // The rest will be secondary color.  Default 3
+#define SECONDARY_PARTIAL_LINES_MAX 6 // The rest will be secondary color.  Default 6
+#define SECONDARY_PARTIAL_OFF_LINES 5 // The rest will be off.              Default 5
+
+
+// Define the chance proportion that secondary color will be displayed
+
+#define CHANCE_SECONDARY_DISPLAYED_OFF  50      // Default 0
+#define CHANCE_SECONDARY_DISPLAYED_ON   50      // Default 100
+
+
+// Primary color partly appearing (reverse order of secondary)
+
+//#define CHANCE_PRIMARY_FULL 6                   // Default 6
+//#define CHANCE_PRIMARY_PARTIAL 4                // Default 3
+//#define CHANCE_PRIMARY_PARTIAL_OFF 6            // Default 6
+
+
+// How many columns to display the primary color.
+
+//#define PRIMARY_PARTIAL_LINES_MIN 3 // The rest will be primary color.  Default 3
+//#define PRIMARY_PARTIAL_LINES_MAX 6 // The rest will be primary color.  Default 6
+//#define PRIMARY_PARTIAL_OFF_LINES 5 // The rest will be off.            Default 5
+
+
+// Define the chance proportion that primar color will be displayed
+
+//#define CHANCE_PRIMARY_DISPLAYED_OFF  50        // Default 0
+//#define CHANCE_PRIMARY_DISPLAYED_ON   50        // Default 100
+
+
+// To allow random leds to temporarily malfunction Poor R2
+
+//#define CHANCE_RANDOM_LED_OFF 0                 // Default 0
+//#define CHANCE_RANDOM_LED_ON 1                  // Default 1
+
 
 // Use the jumpers on the PSI CPU board to set Front colors (jumper off)
 // or Rear colors (jumper on).
-
 // Use the following settings to adjust the colors for font and rear.
 
 // Set colors for the front PSI.
-                                            // Default colors
-CRGB frontPrimaryColor = CRGB(0, 0, 255);   // Blue (0, 0, 255)
-CRGB frontSecondaryColor = CRGB(255, 0, 0); // Red  (255, 0, 0)
-CRGB frontSecondaryOffColor = CRGB::Black;  // Off Black
+                                                // Default colors
+CRGB frontPrimaryColor = CRGB(0, 0, 255);       // Blue (0, 0, 255)
+//CRGB frontPrimaryOffColor = CRGB::Black;        // Off Black
+CRGB frontSecondaryColor = CRGB(255, 0, 0);     // Red  (255, 0, 0)
+CRGB frontSecondaryOffColor = CRGB::Black;      // Off Black
 
 // Colors for the rear PSI
-                                              // Default colors
-CRGB rearPrimaryColor = CRGB(0, 255, 0);      // Green  (0, 255, 0)
-CRGB rearSecondaryColor = CRGB(200, 170, 0);  // Yellow (200, 170, 0)
-CRGB rearSecondaryOffColor = CRGB::Black;     // Off Black
+                                                // Default colors
+CRGB rearPrimaryColor = CRGB(0, 255, 0);        // Green  (0, 255, 0)
+//CRGB rearPrimaryOffColor = CRGB::Black;         // Off Black
+CRGB rearSecondaryColor = CRGB(200, 170, 0);    // Yellow (200, 170, 0)
+CRGB rearSecondaryOffColor = CRGB::Black;       // Off Black
 
-#define JUMP_FRONT_REAR 14
+// Single LED off color
+
+//CRGB LED_OFF = CRGB::Black;                     // Off Black
+
 
 // Set the colors based on the pin being jumpered to ground.
 
+#define JUMP_FRONT_REAR 14
 CRGB primary_color() {
   if (digitalRead(JUMP_FRONT_REAR)) {
     return frontPrimaryColor;
@@ -109,6 +154,14 @@ CRGB primary_color() {
     return rearPrimaryColor;
   }
 }
+
+//CRGB primary_off_color() {
+// if (digitalRead(JUMP_FRONT_REAR)) {
+//    return frontPrimaryOffColor;
+//  } else {
+//    return rearPrimaryOffColor;
+//  }
+//}
 
 CRGB secondary_color() {
   if (digitalRead(JUMP_FRONT_REAR)) {
@@ -127,13 +180,13 @@ CRGB secondary_off_color() {
 }
 
 ///////////////////////////////////////////////////
-//////////////// Serial SETTINGS ///////////////// 
+//////////////// Serial SETTINGS /////////////////
 /////////////////////////////////////////////////
 
 // If USB_SERIAL is defined, the Serial port on the USB of the 
 // Pro Micro will be used for communication, and debug output
 // Uncomment this if you want to debug, add new patterns etc,
-// and are working via USB.  Note the brigtness warning on the main
+// and are working via USB.  Note the brightness warning on the main
 // sketch tab! The normal mode is that any serial control device (MarcDuino,
 // STEALTH etc) will be connected to the PSI via the header pins on the
 // PSI PCB by default.  These pins are referred to as Serial1.
@@ -167,26 +220,28 @@ byte I2CAdress = 22;
 // CHANGES BEYOND THESE LINES SHOULD NOT BE NECESSARY ///
 ////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-
 // This is Neil's personal setup ... probably don't play with this!
-//#define NEIL_PERSONAL_DEBUG
+
+#define NEIL_PERSONAL_DEBUG
 #ifdef NEIL_PERSONAL_DEBUG
   #define DEBUG       // Prints Debug Strings to help debugging
   #define USB_SERIAL  // Sets the Serial to use the USB port for sending and receiving commands instead of the TxRx on the board.
 #endif
+
 // End Neil's personal setup.
 
-//Setup Debug stuff
-
+// Setup Debug stuff
 // Uncomment this if you want Debug output.
 // By default debug output is not enabled in
 // the release version
+
 //#define DEBUG
+
 
 //Setup Debug stuff for Real Arduino Pro Micros
 #ifdef DEBUG
-    #define DEBUG_PRINT_LN(msg)  serialPort->println(msg)
-    #define DEBUG_PRINT(msg)  serialPort->print(msg)
+  #define DEBUG_PRINT_LN(msg)  serialPort->println(msg)
+  #define DEBUG_PRINT(msg)  serialPort->print(msg)
 #else
   #define DEBUG_PRINT_LN(msg)
   #define DEBUG_PRINT(msg)
@@ -197,6 +252,7 @@ byte I2CAdress = 22;
 #define LEDS_PER_COLUMN 6
 #define COLUMNS 10
  
+
 // Addressible LED Array
 // -1 = no LED in that grid space
 
@@ -218,11 +274,12 @@ byte I2CAdress = 22;
 // maximum number of characters in a command (63 chars since we need the null termination)
 #define CMD_MAX_LENGTH 64 
 
-// memory for command string processing
+// Memory for command string processing
 char cmdString[CMD_MAX_LENGTH];
 
 // POT Averager
 #define POT_AVG_SIZE 30
+
 // Change this if you get flicker.  A larger number will reduce POT noise.
 #define POT_VARIANCE_LEVEL 2
 uint16_t POTReadings[POT_AVG_SIZE];
